@@ -4,7 +4,7 @@ import org.junit.Test;
 
 public class TestSemVerJava {
     @Test
-    public void javaTest_SemVer() {
+    public void test() {
         SemVer semver = new SemVer.Builder()
             .major(1)
             .minor(0)

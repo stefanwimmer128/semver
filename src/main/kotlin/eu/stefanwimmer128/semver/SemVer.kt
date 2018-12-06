@@ -128,20 +128,25 @@ data class SemVer(
         val preRelease: MutableList<String> = mutableListOf(),
         val buildMetadata: MutableList<String> = mutableListOf()
     ) {
-        fun major(major: Int) =
-            copy(major = major)
+        fun major(major: Int) = also {
+            it.major = major
+        }
         
-        fun minor(minor: Int) =
-            copy(minor = minor)
+        fun minor(minor: Int) = also {
+            it.minor = minor
+        }
         
-        fun patch(patch: Int) =
-            copy(patch = patch)
+        fun patch(patch: Int) = also {
+            it.patch = patch
+        }
         
-        fun preRelease(preRelease: String) =
-            copy(preRelease = mutableListOf(*this.preRelease.toTypedArray(), preRelease))
+        fun preRelease(preRelease: String) = also {
+            it.preRelease.add(preRelease)
+        }
         
-        fun buildMetadata(buildMetadata: String) =
-            copy(buildMetadata = mutableListOf(*this.buildMetadata.toTypedArray(), buildMetadata))
+        fun buildMetadata(buildMetadata: String) = also {
+            it.buildMetadata.add(buildMetadata)
+        }
         
         fun build() =
             SemVer(major as Int, minor as Int, patch as Int, preRelease.toList(), buildMetadata.toList())

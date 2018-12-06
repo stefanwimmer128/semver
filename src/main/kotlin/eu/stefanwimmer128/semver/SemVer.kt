@@ -19,8 +19,8 @@ data class SemVer(
         major,
         minor,
         patch,
-        REGEX_IDENTIFIER.findAll(preRelease).map(MatchResult::value).toList(),
-        REGEX_IDENTIFIER.findAll(buildMetadata).map(MatchResult::value).toList()
+        if (preRelease.isEmpty()) listOf() else preRelease.split("."),
+        if (buildMetadata.isEmpty()) listOf() else buildMetadata.split(".")
     )
     
     init {

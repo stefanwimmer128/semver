@@ -144,14 +144,14 @@ data class SemVer @JvmOverloads constructor(
                 it.patch = patch
             }
         
-        fun preRelease(preRelease: String) =
+        fun preRelease(vararg preRelease: String) =
             also {
-                it.preRelease.add(preRelease)
+                it.preRelease.addAll(preRelease.joinToString(".").split("."))
             }
         
-        fun buildMetadata(buildMetadata: String) =
+        fun buildMetadata(vararg buildMetadata: String) =
             also {
-                it.buildMetadata.add(buildMetadata)
+                it.buildMetadata.addAll(buildMetadata.joinToString(".").split("."))
             }
         
         fun build() =

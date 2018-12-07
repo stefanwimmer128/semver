@@ -10,8 +10,7 @@ public class TestSemVerJava {
             .major(1)
             .minor(0)
             .patch(0)
-            .preRelease("alpha")
-            .preRelease("0")
+            .preRelease("alpha.0")
             .buildMetadata("devBuild")
             .build();
         Assert.assertEquals(semver, SemVer.parse("1.0.0-alpha.0+devBuild"));

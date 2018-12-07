@@ -2,14 +2,14 @@ package eu.stefanwimmer128.semver
 
 import java.lang.IllegalArgumentException
 
-data class SemVer(
+data class SemVer @JvmOverloads constructor(
     val major: Int,
     val minor: Int,
     val patch: Int,
     val preRelease: List<String> = listOf(),
     val buildMetadata: List<String> = listOf()
 ): Comparable<SemVer> {
-    constructor(
+    @JvmOverloads constructor(
         major: Int,
         minor: Int,
         patch: Int,
@@ -35,13 +35,13 @@ data class SemVer(
         }
         
         preRelease.forEach {
-            require(it.matches(REGEX_IDENTIFIER)) {
+            require(it matches REGEX_IDENTIFIER) {
                 "malformed preRelease key [$it]"
             }
         }
         
         buildMetadata.forEach {
-            require(it.matches(REGEX_IDENTIFIER)) {
+            require(it matches REGEX_IDENTIFIER) {
                 "malformed buildMetadata key [$it]"
             }
         }
@@ -55,15 +55,16 @@ data class SemVer(
             else -> throw IllegalArgumentException("malformed semver version increase identifier")
         }
     
-    override fun toString() = buildString {
-        append("$major.$minor.$patch")
-        
-        if (preRelease.isNotEmpty())
-            append("-${preRelease.joinToString(".")}")
-        
-        if (buildMetadata.isNotEmpty())
-            append("+${buildMetadata.joinToString(".")}")
-    }
+    override fun toString() =
+        buildString {
+            append("$major.$minor.$patch")
+            
+            if (preRelease.isNotEmpty())
+                append("-${preRelease.joinToString(".")}")
+            
+            if (buildMetadata.isNotEmpty())
+                append("+${buildMetadata.joinToString(".")}")
+        }
     
     override fun compareTo(other: SemVer): Int {
         return when {
@@ -86,17 +87,13 @@ data class SemVer(
     }
     
     companion object {
-        @JvmField
-        val REGEX_DIGIT = Regex("""(0|[1-9]\d*)""")
-        @JvmField
-        val REGEX_IDENTIFIER = Regex("""[A-z0-9\-]+""")
-        @JvmField
-        val REGEX_IDENTIFIERS = Regex("""$REGEX_IDENTIFIER(\.$REGEX_IDENTIFIER)*""")
-        @JvmField
-        val REGEX_SEMVER = Regex("""$REGEX_DIGIT.$REGEX_DIGIT.$REGEX_DIGIT(-$REGEX_IDENTIFIERS)?(\+$REGEX_IDENTIFIERS)""")
+        @JvmField val REGEX_DIGIT = Regex("""(0|[1-9]\d*)""")
+        @JvmField val REGEX_IDENTIFIER = Regex("""[A-z0-9\-]+""")
+        @JvmField val REGEX_IDENTIFIERS = Regex("""$REGEX_IDENTIFIER(\.$REGEX_IDENTIFIER)*""")
+        @JvmField val REGEX_SEMVER = Regex("""$REGEX_DIGIT.$REGEX_DIGIT.$REGEX_DIGIT(-$REGEX_IDENTIFIERS)?(\+$REGEX_IDENTIFIERS)""")
         
         fun build(block: Builder.() -> Unit) =
-            Builder().apply(block).build()
+            Builder(block).build()
         
         @JvmStatic
         fun parse(version: String): SemVer =
@@ -121,32 +118,41 @@ data class SemVer(
             }
     }
     
-    data class Builder(
+    data class Builder @JvmOverloads constructor(
         var major: Int? = null,
         var minor: Int? = null,
         var patch: Int? = null,
         val preRelease: MutableList<String> = mutableListOf(),
         val buildMetadata: MutableList<String> = mutableListOf()
     ) {
-        fun major(major: Int) = also {
-            it.major = major
+        constructor(block: Builder.() -> Unit): this() {
+            block()
         }
         
-        fun minor(minor: Int) = also {
-            it.minor = minor
-        }
+        fun major(major: Int) =
+            also {
+                it.major = major
+            }
         
-        fun patch(patch: Int) = also {
-            it.patch = patch
-        }
+        fun minor(minor: Int) =
+            also {
+                it.minor = minor
+            }
         
-        fun preRelease(preRelease: String) = also {
-            it.preRelease.add(preRelease)
-        }
+        fun patch(patch: Int) =
+            also {
+                it.patch = patch
+            }
         
-        fun buildMetadata(buildMetadata: String) = also {
-            it.buildMetadata.add(buildMetadata)
-        }
+        fun preRelease(preRelease: String) =
+            also {
+                it.preRelease.add(preRelease)
+            }
+        
+        fun buildMetadata(buildMetadata: String) =
+            also {
+                it.buildMetadata.add(buildMetadata)
+            }
         
         fun build() =
             SemVer(major as Int, minor as Int, patch as Int, preRelease.toList(), buildMetadata.toList())

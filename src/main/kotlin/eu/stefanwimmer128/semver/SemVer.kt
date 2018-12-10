@@ -76,10 +76,14 @@ data class SemVer @JvmOverloads constructor(
                 else -> when {
                     patch < other.patch -> -1
                     patch > other.patch -> 1
-                    else -> when {
-                        toString() < other.toString() -> -1
-                        toString() > other.toString() -> 1
-                        else -> 0
+                    else ->toString().let { me ->
+                        other.toString().let { other ->
+                            when {
+                                me < other -> -1
+                                me > other -> 1
+                                else -> 0
+                            }
+                        }
                     }
                 }
             }
@@ -118,12 +122,12 @@ data class SemVer @JvmOverloads constructor(
             }
     }
     
-    data class Builder @JvmOverloads constructor(
+    class Builder @JvmOverloads constructor(
         var major: Int? = null,
         var minor: Int? = null,
         var patch: Int? = null,
-        val preRelease: MutableList<String> = mutableListOf(),
-        val buildMetadata: MutableList<String> = mutableListOf()
+        var preRelease: MutableList<String> = mutableListOf(),
+        var buildMetadata: MutableList<String> = mutableListOf()
     ) {
         constructor(block: Builder.() -> Unit): this() {
             block()
@@ -156,5 +160,16 @@ data class SemVer @JvmOverloads constructor(
         
         fun build() =
             SemVer(major as Int, minor as Int, patch as Int, preRelease.toList(), buildMetadata.toList())
+        
+        operator fun MutableList<String>.invoke(block: StringList.() -> Unit) =
+            StringList(this).block()
+        
+        class StringList(list: MutableList<String>): MutableList<String> by list {
+            operator fun String.unaryPlus() =
+                add(this)
+            
+            operator fun String.unaryMinus() =
+                remove(this)
+        }
     }
 }

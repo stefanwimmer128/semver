@@ -14,6 +14,21 @@ class TestSemVerKt {
             preRelease("alpha", "0")
             buildMetadata("devBuild")
         })
+        assertEquals(SemVer.parse("1.0.0-alpha.0+devBuild"), SemVer.build {
+            major = 1
+            minor = 0
+            patch = 0
+            
+            preRelease {
+                + "alpha"
+                + "0"
+            }
+            buildMetadata {
+                + "devBuild"
+                + "test"
+                - "test"
+            }
+        })
         assertEquals(SemVer(1, 2, 3).increase("major"), SemVer(2, 0, 0))
         assertEquals(SemVer(1, 2, 3).increase("minor"), SemVer(1, 3, 0))
         assertEquals(SemVer(1, 2, 3).increase("patch"), SemVer(1, 2, 4))

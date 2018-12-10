@@ -92,7 +92,7 @@ data class SemVer @JvmOverloads constructor(
     
     companion object {
         @JvmField val REGEX_DIGIT = Regex("""(0|[1-9]\d*)""")
-        @JvmField val REGEX_IDENTIFIER = Regex("""[A-z0-9\-]+""")
+        @JvmField val REGEX_IDENTIFIER = Regex("""[A-Za-z\d\-]+""")
         @JvmField val REGEX_IDENTIFIERS = Regex("""$REGEX_IDENTIFIER(\.$REGEX_IDENTIFIER)*""")
         @JvmField val REGEX_SEMVER = Regex("""$REGEX_DIGIT.$REGEX_DIGIT.$REGEX_DIGIT(-$REGEX_IDENTIFIERS)?(\+$REGEX_IDENTIFIERS)""")
         
